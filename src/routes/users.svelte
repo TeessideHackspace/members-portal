@@ -1,45 +1,38 @@
 <script>
+  import Address from "../components/Address.svelte";
+  import EmergencyContact from "../components/EmergencyContact.svelte";
+  import DirectDebit from "../components/DirectDebit.svelte";
+  import Subscription from "../components/Subscription.svelte";
+  import { getUser } from "../api";
   import CONST from "../constants";
-  import pokemon from "../pokemon";
-  import Card from "../components/Card.svelte";
-  import Spinner from "../components/Spinner.svelte";
 
-  let pokes = [];
-  if (process.browser) {
-    (async () => {
-      const result = await pokemon();
-      pokes = result.data.pokemons;
-    })();
-  }
+  import Button, {Label, Icon} from '@smui/button';
+
+  const user = getUser();
 </script>
 
 <style>
-  .user-list {
-    text-align: center;
-  }
-  .user-list > div {
-    display: inline-block;
-  }
 
-    .user-list > div {
-      margin-right: 1.5em;
-      margin-bottom: 1.5em;
-    }
 </style>
 
 <svelte:head>
-  <title>{CONST.TITLE}: Users</title>
+  <title>{CONST.TITLE}: Account</title>
 </svelte:head>
 
-<h1>Users</h1>
-{#if pokes.length <= 0}
-  <Spinner/>
-{:else}
-<div class="user-list">
-  {#each pokes as poke}
-    <div>
-      <Card title={poke.name} subtitle={poke.classification} img={poke.image} />
-    </div>
+{#await $user}
+  <li>Loading...</li>
+{:then result}
+  {#each result.data.user_entity as user}
+  <h1>{user.first_name} {user.last_name}</h1>
+    <h3>{user.email}</h3>
+
+    <Address model={user.user_address} />
+    <EmergencyContact model={user.user_emergency_contact} />
   {/each}
-</div>
-{/if}
+  <DirectDebit model={result.data.gocardlessMandate} />
+  <Subscription model={result.data.gocardlessSubscription} />
+
+
+{:catch error}
+  <li>Error loading user: {error}</li>
+{/await}

@@ -29,8 +29,8 @@
   <p>{$userProfile.profile.email}</p>
   <h2>Roles</h2>
 	<div>
-  {#each $userProfile.profile.resource_access['hackspace-api'].roles as role}
+  <!--{#each $userProfile.profile.resource_access['hackspace-api'].roles as role}
     <Chip value={role}></Chip>
-  {/each}
+  {/each}-->
 	</div>
 {/if}

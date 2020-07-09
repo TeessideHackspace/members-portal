@@ -77,6 +77,11 @@
       </a>
     </li>
     <li>
+      <a aria-current={segment === 'signup' ? 'page' : undefined} href="signup">
+        sign up
+      </a>
+    </li>
+    <li>
       <button on:click={logout}>logout</button>
     </li>
   </ul>
