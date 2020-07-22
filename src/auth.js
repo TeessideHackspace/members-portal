@@ -2,7 +2,10 @@ import Oidc from "../node_modules/oidc-client/index";
 import { loggedIn, loggedInOnce, userProfile } from "./main.store";
 //Oidc.Log.logger = console;
 
-const redirectUri = `${window.location.protocol}//${window.location.hostname}`;
+let redirectUri = 'http://localhost:3000';
+try {
+  redirectUri = `${window.location.protocol}//${window.location.hostname}`;
+} catch(e){}
 
 const settings = {
   authority: "https://auth.teessidehackspace.org.uk/auth/realms/master",
