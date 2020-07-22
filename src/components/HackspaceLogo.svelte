@@ -7,15 +7,12 @@
 
 <style>
   figure {
-    margin: 0 0 1em 0;
-    text-align: center;
-    margin: 0 auto;
+    margin: 0;
+    max-width: 100px;
   }
 
   svg {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 0 1em 0;
+    margin: 0;
   }
 </style>
 
@@ -33,7 +30,7 @@
     <g>
       <path
         in:draw={{ duration: 2000 }}
-        style="stroke:{color}; stroke-width: 1.5; fill:#FFFFFF"
+        style="stroke:{color}; stroke-width: 3; fill:#FFFFFF"
         d={path} />
     </g>
     <g>

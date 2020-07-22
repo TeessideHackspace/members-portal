@@ -38,13 +38,15 @@ const httpLink = new HttpLink({
 
 const authLink = setContext(async (_, { headers }) => {
   const user = await Auth.getUser();
-
-  return {
-    headers: {
-      ...headers,
-      Authorization: "Bearer " + user.access_token || null,
-    },
-  };
+  if (user && user.access_token) {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${user.access_token}`,
+      },
+    };
+  }
+  return headers;
 });
 
 const link = split(

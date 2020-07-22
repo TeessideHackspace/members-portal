@@ -1,4 +1,5 @@
 <script>
+	import Nav from "../components/Nav.svelte";
 	export let status;
 	export let error;
 
@@ -30,6 +31,8 @@
 <svelte:head>
 	<title>{status}</title>
 </svelte:head>
+
+<Nav {segment} />
 
 <h1>{status}</h1>
 

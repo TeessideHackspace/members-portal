@@ -1,16 +1,16 @@
-import Oicd from '../node_modules/oidc-client/index';
-import { loggedIn, loggedInOnce, userProfile } from './main.store';
-Oicd.Log.logger = console;
+import Oidc from "../node_modules/oidc-client/index";
+import { loggedIn, loggedInOnce, userProfile } from "./main.store";
+//Oidc.Log.logger = console;
 
 const settings = {
-  authority: 'https://auth.teessidehackspace.org.uk/auth/realms/master',
-  client_id: 'hackspace-api',
-  redirect_uri: 'http://localhost:3000',
-  post_logout_redirect_uri: 'http://localhost:3000',
-  response_type: 'id_token token',
-  scope: 'openid profile resource_access',
+  authority: "https://auth.teessidehackspace.org.uk/auth/realms/master",
+  client_id: "hackspace-api",
+  redirect_uri: "http://localhost:3000",
+  post_logout_redirect_uri: "http://localhost:3000",
+  response_type: "id_token token",
+  scope: "openid profile",
   filterProtocolClaims: true,
-  loadUserInfo: true
+  loadUserInfo: true,
 };
 
 class Auth {
@@ -22,14 +22,14 @@ class Auth {
     return this.user !== null && this.user && !this.user.expired;
   }
 
-  login() {
+  login(options) {
     this.user = null;
     this.updateStore();
-    return this.userManager.signinRedirect();
+    return this.userManager.signinRedirect(options);
   }
 
   updateStore() {
-    if(this.isLoggedIn){
+    if (this.isLoggedIn) {
       loggedInOnce.set(true);
     }
     loggedIn.set(this.isLoggedIn);
@@ -57,7 +57,7 @@ class Auth {
     if (this._userManager) {
       return this._userManager;
     } else {
-      return (this._userManager = new Oicd.UserManager(settings));
+      return (this._userManager = new Oidc.UserManager(settings));
     }
   }
 }

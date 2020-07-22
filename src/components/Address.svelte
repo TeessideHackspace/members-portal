@@ -6,7 +6,12 @@
   import HelperText from "@smui/textfield/helper-text/index";
 
   export let model;
-  model = model ? model : {};
+  model = model ? model : {
+    line_1: '',
+    line_2: '',
+    town: '',
+    postcode: '',
+  };
 
   let isComplete = x => x && x.line_1 && x.town && x.postcode;
 </script>

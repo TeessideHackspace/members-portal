@@ -1,11 +1,14 @@
 <script>
   import FaEdit from "svelte-icons/fa/FaEdit.svelte";
+  import Button from "@smui/button";
   import { client } from "../apollo";
   import { mutate } from "svelte-apollo";
 
   import Card, { Content } from "@smui/card";
   import { Icon } from "@smui/fab";
   import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
+
+   import { getGocardlessUrl, confirmGocardlessRedirect } from "../api.js";
 
   export let model;
 
@@ -28,6 +31,22 @@
       return "none";
     }
   };
+
+  const setupDirectDebit = async () => {
+    const response = await getGocardlessUrl();
+    const url = response.data.getGocardlessRedirect.gocardless_url;
+    window.location = url;
+  }
+
+  const handleRedirect = async () => {
+    const params = new URLSearchParams(window.location.search)
+    if(params.get("redirect_flow_id")) {
+      await confirmGocardlessRedirect(params.get("redirect_flow_id"));
+      model.refetch();
+    }
+  }
+  handleRedirect();
+  
 </script>
 
 <style type="text/scss">
@@ -95,6 +114,17 @@
       </Row>
     </header>
     <Content>
+    {#if model.status == 'missing_customer'}
+      <p>You do not yet have a Direct Debit mandate set up. Would you like to create one now?</p>
+      <Button
+          on:click={setupDirectDebit}
+          variant="outlined"
+          class="update-button">
+          Set up Direct Debit
+        </Button>
+    {:else if model.status == 'missing_mandate'}
+      <p>Setting up your direct debit, this may take a few minutes.</p>
+    {:else}
       <dl>
         <dt>Status</dt>
         <dd>{model.status}</dd>
@@ -105,7 +135,7 @@
         <dt>Created at</dt>
         <dd>{model.created_at}</dd>
       </dl>
-
+    {/if}
     </Content>
   </div>
 </Card>
