@@ -2,11 +2,13 @@ import Oidc from "../node_modules/oidc-client/index";
 import { loggedIn, loggedInOnce, userProfile } from "./main.store";
 //Oidc.Log.logger = console;
 
+const redirectUri = `${window.location.protocol}//${window.location.hostname}`;
+
 const settings = {
   authority: "https://auth.teessidehackspace.org.uk/auth/realms/master",
   client_id: "hackspace-api",
-  redirect_uri: "http://localhost:3000",
-  post_logout_redirect_uri: "http://localhost:3000",
+  redirect_uri: redirectUri,
+  post_logout_redirect_uri: redirectUri,
   response_type: "id_token token",
   scope: "openid profile",
   filterProtocolClaims: true,
