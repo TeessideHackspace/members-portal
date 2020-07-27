@@ -1,4 +1,5 @@
 <script>
+  import CONST from "../constants";
   import Auth from "../auth.js";
   import { fade } from "svelte/transition";
   import HackspaceLogo from "../components/HackspaceLogo.svelte";
@@ -16,6 +17,10 @@
     margin:auto;
   }
 </style>
+
+<svelte:head>
+  <title>{CONST.TITLE}: Login</title>
+</svelte:head>
 
 <section in:fade={{ delay: 500, duration: 500 }}>
   <HackspaceLogo />
