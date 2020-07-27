@@ -12,7 +12,7 @@
       v: 625
     },
     {
-      label: "Service Charge",
+      label: "Service Charge for Industrial Est.",
       v: 52.91
     },
     {
@@ -95,7 +95,7 @@
   dt {
     font-weight: bold;
   }
-  .loss{
+  .loss {
     color: red;
   }
   .profit {
@@ -140,7 +140,8 @@
     {:else}
       <span class="loss">loss</span>
     {/if}
-    of <strong>£{Math.abs(inOut.in - inOut.out).toFixed(2)}</strong>
+    of
+    <strong>£{Math.abs(inOut.in - inOut.out).toFixed(2)}</strong>
   </h1>
 
   <h2>Subscriptions: £{inOut.in}</h2>
