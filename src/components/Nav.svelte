@@ -123,6 +123,9 @@
       </a>
     </li>
     <li>
+      <a href="https://dokuwiki.teessidehackspace.org.uk/Main">Wiki</a>
+    </li>
+    <li>
       <a aria-current={segment === 'stats' ? 'page' : undefined} href="stats">
         Stats
       </a>
