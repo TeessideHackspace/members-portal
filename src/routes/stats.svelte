@@ -65,12 +65,12 @@
   stats.subscribe(async value => {
     const result = await value;
 
-    result.data.getMembershipStats.income = 768;
+    result.data.stats.income = 768;
 
-    const max = Math.max(result.data.getMembershipStats.income, totalExpense);
+    const max = Math.max(result.data.stats.income, totalExpense);
     inOut = {
-      in: result.data.getMembershipStats.income.toFixed(2),
-      inPct: (result.data.getMembershipStats.income / max) * 100,
+      in: result.data.stats.income.toFixed(2),
+      inPct: (result.data.stats.income / max) * 100,
       out: totalExpense.toFixed(2),
       outPct: (totalExpense / max) * 100
     };
@@ -124,13 +124,13 @@
 
   <dl>
     <dt>Number of members</dt>
-    <dd>{result.data.getMembershipStats.num_members}</dd>
+    <dd>{result.data.stats.numMembers}</dd>
 
     <dt>Average Subscription:</dt>
-    <dd>£{result.data.getMembershipStats.average} / month</dd>
+    <dd>£{result.data.stats.average} / month</dd>
 
     <dt>Number of members paying less than the average</dt>
-    <dd>{result.data.getMembershipStats.num_less_average}</dd>
+    <dd>{result.data.stats.numLessAverage}</dd>
   </dl>
 
   <h1>

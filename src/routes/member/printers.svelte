@@ -1,5 +1,5 @@
 <script>
-  import CONST from "../constants";
+  import CONST from "../../constants";
 </script>
 
 <style>
@@ -20,7 +20,7 @@
 </style>
 
 <svelte:head>
-  <title>{CONST.TITLE}: Member</title>
+  <title>{CONST.TITLE}: 3D Printers</title>
 </svelte:head>
 
 <h1>Printer 1 Webcam feed</h1>

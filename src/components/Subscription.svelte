@@ -11,7 +11,12 @@
   import { Icon } from "@smui/fab";
   import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
 
-   import { gocardlessSubscribe } from "../api.js";
+  import {
+    gocardlessSubscribe,
+    gocardlessUpdateSubscription,
+    gocardlessCancel,
+    getSubscription
+  } from "../api.js";
 
   export let model;
 
@@ -21,26 +26,46 @@
 
   let subscriptionAmount = 15;
 
-  const getStatus = () => {
-    if (model.status == "active") {
-      return "active";
-    } else if (
-      model.status == "submitted" ||
-      model.status == "created" ||
-      model.status == "pending_submission"
-    ) {
-      return "pending";
-    } else if (model.status == "failed") {
-      return "failed";
-    } else {
-      return "none";
-    }
-  };
+  let cssStatus = "none";
+  $: if (model.status == "active") {
+    cssStatus = "active";
+  } else if (
+    model.status == "submitted" ||
+    model.status == "created" ||
+    model.status == "pending_submission"
+  ) {
+    cssStatus = "pending";
+  } else if (model.status == "failed") {
+    cssStatus = "failed";
+  } else {
+    cssStatus = "none";
+  }
 
   const createSubscription = async () => {
     await gocardlessSubscribe(subscriptionAmount);
-    model.refetch();
-  }
+    await updateModel();
+    console.log(model);
+  };
+
+  const updateSubscription = async () => {
+    await gocardlessUpdateSubscription(parseInt(model.amount, 10));
+    await updateModel();
+    console.log(model);
+  };
+
+  const cancelSubscription = async () => {
+    await gocardlessCancel();
+    await updateModel();
+    console.log(model);
+  };
+
+  const updateModel = async () => {
+    const subscription = await getSubscription();
+    await subscription.refetch();
+    const response = await subscription.result();
+    console.log(response);
+    model = response.data.subscription;
+  };
 </script>
 
 <style type="text/scss">
@@ -92,7 +117,7 @@
 </style>
 
 <Card>
-  <div class="direct-debit {getStatus()}">
+  <div class="direct-debit {cssStatus}">
     <header
       variant="static"
       dense
@@ -108,47 +133,86 @@
       </Row>
     </header>
     <Content>
-    {#if model.status == 'missing_customer'}
-      <p>You must set up a Direct Debit before you can subscribe.</p>
-    {:else if model.status == 'missing_subscription'}
-    <p>Teesside Hackspace is a members-owned non-profit association. Members have a hand in the running of the organisation as well as 24/7 access to the space.</p>
+      {#if model.status == 'missing_customer'}
+        <p>You must set up a Direct Debit before you can subscribe.</p>
+      {:else if model.status == 'missing_subscription'}
+        <p>
+          Teesside Hackspace is a members-owned non-profit association. Members
+          have a hand in the running of the organisation as well as 24/7 access
+          to the space.
+        </p>
 
-    <p>Membership can be paid monthly or annually by Direct Debit. 
-    We ask that you pay what you think the space will be worth to you. 
-    Please be as generous as you can, Teesside Hackspace is currently funded entirely by membership dues & donations. 
-    We're currently making a loss and burning through our cash reserves to finance our new space. 
-    Our recommended minimum subscription is £15/month. 
-    For students, retirees or low income members the minimum subscription is £5/month.</p>
+        <p>
+          Membership can be paid monthly or annually by Direct Debit. We ask
+          that you pay what you think the space will be worth to you. Please be
+          as generous as you can, Teesside Hackspace is currently funded
+          entirely by membership dues & donations. We're currently making a loss
+          and burning through our cash reserves to finance our new space. Our
+          recommended minimum subscription is £15/month. For students, retirees
+          or low income members the minimum subscription is £5/month.
+        </p>
 
-    <span>£</span>
-      <Textfield
-        bind:value={subscriptionAmount}
-        label="Amount"
-        input$aria-controls="helper-text-standard-amount"
-        input$aria-describedby="helper-text-standard-amount" />
-      <HelperText id="helper-text-standard-amount">
-        Subscription amount per month, in £
-      </HelperText>
+        <span>£</span>
+        <Textfield
+          bind:value={subscriptionAmount}
+          label="Amount"
+          input$aria-controls="helper-text-standard-amount"
+          input$aria-describedby="helper-text-standard-amount" />
+        <HelperText id="helper-text-standard-amount">
+          Subscription amount per month, in £
+        </HelperText>
 
-      <Button
+        <Button
           on:click={createSubscription}
           variant="outlined"
           class="update-button">
           Subscribe to Teesside Hackspace
         </Button>
-    {:else}
-      <dl>
-        <dt>Status</dt>
-        <dd>{model.status}</dd>
+      {:else}
+        <dl>
+          <dt>Status</dt>
+          <dd>{model.status}</dd>
 
-        <dt>Amount</dt>
-        <dd>£{model.amount / 100}</dd>
+          <dt>Amount</dt>
 
-        <dt>Created at</dt>
-        <dd>{model.created_at}</dd>
-      </dl>
-    {/if}
-      
+          <dd>
+            £
+            <Textfield
+              bind:value={model.amount}
+              label="Amount"
+              input$aria-controls="helper-text-standard-amount"
+              input$aria-describedby="helper-text-standard-amount" />
+            <HelperText id="helper-text-standard-amount">
+              Subscription amount per month, in £
+            </HelperText>
+          </dd>
+
+          <dt>Created at</dt>
+          <dd>{model.createdAt}</dd>
+        </dl>
+
+        {#if model.status == 'active'}
+          <Button
+            on:click={updateSubscription}
+            variant="outlined"
+            class="update-button">
+            Update Subscription
+          </Button>
+          <Button
+            on:click={cancelSubscription}
+            variant="outlined"
+            class="update-button">
+            Cancel Subscription
+          </Button>
+        {:else}
+          <Button
+            on:click={createSubscription}
+            variant="outlined"
+            class="update-button">
+            Re-subscribe to Teesside Hackspace
+          </Button>
+        {/if}
+      {/if}
 
     </Content>
   </div>

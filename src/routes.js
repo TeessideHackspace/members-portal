@@ -2,8 +2,8 @@ import { Router } from "@beyonk/sapper-rbac";
 
 const routes = new Router()
   .restrict("/account.*", ["user"])
-  .restrict("/trustees.*", ["trustee"])
-  .restrict("/members.*", ["customer"])
+  .restrict("/trustee.*", ["trustee"])
+  .restrict("/member.*", ["member"])
   .unrestrict(".*")
   .unrestrict("/login.*")
   .unrestrict("/index.*")

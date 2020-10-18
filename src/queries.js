@@ -23,19 +23,30 @@ export const GET_USER_QUERY = gql`
         name
         id
       }
+      subscription {
+        amount
+        status
+        id
+        createdAt
+      }
+      mandate {
+        id
+        status
+        reference
+        nextPossibleChargeDate
+        createdAt
+      }
     }
-    gocardlessSubscription {
+  }
+`;
+
+export const GET_SUBSCRIPTION_QUERY = gql`
+  query {
+    subscription {
       amount
       status
       id
-      created_at
-    }
-    gocardlessMandate {
-      created_at
-      id
-      next_possible_charge_date
-      reference
-      status
+      createdAt
     }
   }
 `;
@@ -89,23 +100,39 @@ export const UPDATE_EMERGENCY_CONTACT_MUTATION = gql`
 
 export const GET_GOCARDLESS_REDIRECT_MUTATION = gql`
   mutation {
-    getGocardlessRedirect {
-      gocardless_url
+    generateRedirectUrl {
+      gocardlessUrl
     }
   }
 `;
 
 export const CONFIRM_GOCARDLESS_REDIRECT_MUTATION = gql`
-  mutation($redirect_flow_id: String!) {
-    confirmGocardlessRedirect(redirect_flow_id: $redirect_flow_id) {
+  mutation($redirectFlowId: String!) {
+    confirmRedirect(redirectFlowId: $redirectFlowId) {
       id
     }
   }
 `;
 
 export const GOCARDLESS_SUBSCRIBE_MUTATION = gql`
-  mutation($subscription_amount: Int!) {
-    gocardlessSubscribe(subscription_amount: $subscription_amount) {
+  mutation($amount: Int!) {
+    subscribe(amount: $amount) {
+      id
+    }
+  }
+`;
+
+export const GOCARDLESS_UPDATE_SUBSCRIPTION_MUTATION = gql`
+  mutation($amount: Int!) {
+    changeSubscriptionAmount(amount: $amount) {
+      id
+    }
+  }
+`;
+
+export const GOCARDLESS_CANCEL_SUBSCRIPTION_MUTATION = gql`
+  mutation {
+    cancelSubscription {
       id
     }
   }
@@ -113,11 +140,11 @@ export const GOCARDLESS_SUBSCRIBE_MUTATION = gql`
 
 export const MEMBERSHIP_STATS_QUERY = gql`
   query {
-    getMembershipStats {
+    stats {
       average
       income
-      num_less_average
-      num_members
+      numLessAverage
+      numMembers
     }
   }
 `;

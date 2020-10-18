@@ -8,7 +8,7 @@
   import { Icon } from "@smui/fab";
   import TopAppBar, { Row, Section, Title } from "@smui/top-app-bar";
 
-   import { getGocardlessUrl, confirmGocardlessRedirect } from "../api.js";
+  import { getGocardlessUrl, confirmGocardlessRedirect } from "../api.js";
 
   export let model;
 
@@ -16,37 +16,37 @@
     model = {};
   }
 
-  const getStatus = () => {
-    if (model.status == "active") {
-      return "active";
-    } else if (
-      model.status == "submitted" ||
-      model.status == "created" ||
-      model.status == "pending_submission"
-    ) {
-      return "pending";
-    } else if (model.status == "failed") {
-      return "failed";
-    } else {
-      return "none";
-    }
-  };
+  let cssStatus = "none";
+  $: if (model.status == "active") {
+    cssStatus = "active";
+  } else if (
+    model.status == "submitted" ||
+    model.status == "created" ||
+    model.status == "pending_submission"
+  ) {
+    cssStatus = "pending";
+  } else if (model.status == "failed") {
+    cssStatus = "failed";
+  } else {
+    cssStatus = "none";
+  }
 
   const setupDirectDebit = async () => {
     const response = await getGocardlessUrl();
-    const url = response.data.getGocardlessRedirect.gocardless_url;
+    const url = response.data.generateRedirectUrl.gocardlessUrl;
     window.location = url;
-  }
+  };
 
   const handleRedirect = async () => {
-    const params = new URLSearchParams(window.location.search)
-    if(params.get("redirect_flow_id")) {
-      await confirmGocardlessRedirect(params.get("redirect_flow_id"));
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("redirect_flow_id")) {
+      const result = await confirmGocardlessRedirect(
+        params.get("redirect_flow_id")
+      );
       model.refetch();
     }
-  }
+  };
   handleRedirect();
-  
 </script>
 
 <style type="text/scss">
@@ -98,7 +98,7 @@
 </style>
 
 <Card>
-  <div class="direct-debit {getStatus()}">
+  <div class="direct-debit {cssStatus}">
     <header
       variant="static"
       dense
@@ -114,28 +114,31 @@
       </Row>
     </header>
     <Content>
-    {#if model.status == 'missing_customer'}
-      <p>You do not yet have a Direct Debit mandate set up. Would you like to create one now?</p>
-      <Button
+      {#if model.status == 'missing_customer'}
+        <p>
+          You do not yet have a Direct Debit mandate set up. Would you like to
+          create one now?
+        </p>
+        <Button
           on:click={setupDirectDebit}
           variant="outlined"
           class="update-button">
           Set up Direct Debit
         </Button>
-    {:else if model.status == 'missing_mandate'}
-      <p>Setting up your direct debit, this may take a few minutes.</p>
-    {:else}
-      <dl>
-        <dt>Status</dt>
-        <dd>{model.status}</dd>
+      {:else if model.status == 'missing_mandate'}
+        <p>Setting up your direct debit, this may take a few minutes.</p>
+      {:else}
+        <dl>
+          <dt>Status</dt>
+          <dd>{model.status}</dd>
 
-        <dt>Payment Reference</dt>
-        <dd>{model.reference}</dd>
+          <dt>Payment Reference</dt>
+          <dd>{model.reference}</dd>
 
-        <dt>Created at</dt>
-        <dd>{model.created_at}</dd>
-      </dl>
-    {/if}
+          <dt>Created at</dt>
+          <dd>{model.createdAt}</dd>
+        </dl>
+      {/if}
     </Content>
   </div>
 </Card>

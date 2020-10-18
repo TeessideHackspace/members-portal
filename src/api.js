@@ -2,9 +2,12 @@ import {
   UPDATE_EMERGENCY_CONTACT_MUTATION,
   UPDATE_ADDRESS_MUTATION,
   GET_USER_QUERY,
+  GET_SUBSCRIPTION_QUERY,
   GET_GOCARDLESS_REDIRECT_MUTATION,
   CONFIRM_GOCARDLESS_REDIRECT_MUTATION,
   GOCARDLESS_SUBSCRIBE_MUTATION,
+  GOCARDLESS_UPDATE_SUBSCRIPTION_MUTATION,
+  GOCARDLESS_CANCEL_SUBSCRIPTION_MUTATION,
   MEMBERSHIP_STATS_QUERY,
 } from "./queries";
 import { client } from "./apollo";
@@ -33,23 +36,40 @@ export const updateAddress = (model) =>
 
 export const getUser = () => query(client, { query: GET_USER_QUERY });
 
+export const getSubscription = () =>
+  query(client, { query: GET_SUBSCRIPTION_QUERY });
+
 export const getGocardlessUrl = () =>
   mutate(client, { mutation: GET_GOCARDLESS_REDIRECT_MUTATION });
 
-export const confirmGocardlessRedirect = (redirect_flow_id) =>
+export const confirmGocardlessRedirect = (redirectFlowId) =>
   mutate(client, {
     mutation: CONFIRM_GOCARDLESS_REDIRECT_MUTATION,
     variables: {
-      redirect_flow_id: redirect_flow_id,
+      redirectFlowId,
     },
   });
 
-export const gocardlessSubscribe = (subscription_amount) =>
+export const gocardlessSubscribe = (amount) =>
   mutate(client, {
     mutation: GOCARDLESS_SUBSCRIBE_MUTATION,
     variables: {
-      subscription_amount: subscription_amount,
+      amount,
     },
+  });
+
+export const gocardlessUpdateSubscription = (amount) => {
+  mutate(client, {
+    mutation: GOCARDLESS_UPDATE_SUBSCRIPTION_MUTATION,
+    variables: {
+      amount,
+    },
+  });
+};
+
+export const gocardlessCancel = () =>
+  mutate(client, {
+    mutation: GOCARDLESS_CANCEL_SUBSCRIPTION_MUTATION,
   });
 
 export const getMembershipStats = () =>

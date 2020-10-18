@@ -2,6 +2,7 @@
   import Auth from "../auth.js";
   import { loggedIn } from "../main.store";
   import HackspaceLogo from "../components/HackspaceLogo.svelte";
+  import MemberNav from "../components/MemberNav.svelte";
   function logout() {
     Auth.logoutSession();
   }
@@ -17,7 +18,6 @@
     (async () => {
       const user = await Auth.getUser();
       if (user) {
-        console.log(user);
         roles = user.profile.resource_access["hackspace-api"].roles;
       }
     })();
@@ -166,3 +166,6 @@
     {/if}
   </ul>
 </nav>
+{#if segment && segment.startsWith('member')}
+  <MemberNav {segment} />
+{/if}
